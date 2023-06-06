@@ -11,7 +11,7 @@ public class MainScreen extends JFrame {
 
 	}
 
-	public void semiConstructor() {
+	public void addSettings() {
 
 		super.add(stage);
 		super.setTitle("Jogo do IFPR - Campus Paranavaí");
@@ -25,10 +25,11 @@ public class MainScreen extends JFrame {
 
 	public static void main(String[] args) throws InterruptedException {
 		MainScreen mainSc = new MainScreen();
-		mainSc.semiConstructor();
+		mainSc.addSettings();
 		while (true) {
 			mainSc.stage.moveEntities();
 			mainSc.stage.collision();
+			mainSc.stage.cleanUpMovingEntities();
 			mainSc.repaint();
 			Thread.sleep(10);
 		}

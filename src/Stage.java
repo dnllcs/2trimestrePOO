@@ -32,7 +32,7 @@ public class Stage extends JPanel implements KeyListener{
 		this.player = new Player();
 		player.load();
 		System.out.println("FFFFFFFFFFFF");
-		Timer timer = new Timer(1000, cleanUpEntities);
+		Timer timer = new Timer(1000, cleanUpDestroyed);
 		Timer enemySpawnTimer = new Timer(500, enemySpawn);
 		enemySpawnTimer.start();
 		timer.start();	
@@ -70,6 +70,7 @@ public class Stage extends JPanel implements KeyListener{
     	projectileList.add(p);
     }
 	public void collision() {
+
 		enemyList.stream().forEach(e -> {
 			if(e.getRectangle().intersects(this.player.getRectangle())) {
 				e.collision();
@@ -77,13 +78,21 @@ public class Stage extends JPanel implements KeyListener{
 			}
 		});
 		enemyList.stream().forEach(e -> {
-			projectileList.stream().forEach(p -> {
-				if(p.getRectangle().intersects(e.getRectangle())) {
-					e.collision();
-					destroyedEnemyList.add(e);
-				}
-			});
+			if(projectileList.size() > 0) {
+				projectileList.stream().forEach(p -> {
+					if(p.getRectangle().intersects(e.getRectangle())) {
+						e.collision();
+						destroyedEnemyList.add(e);
+					}
+				});
+			}
 		});
+		//????????????????????????????????????????
+		for(int i = 0;i<enemyList.size();i++) {
+			if(enemyList.get(i).isDestroyed) {
+				enemyList.remove(i);
+			}
+		}
 	}
 
 	@Override
@@ -113,21 +122,23 @@ public class Stage extends JPanel implements KeyListener{
 			this.fireProjectile();
 		}
 	}
+	public void cleanUpMovingEntities() {
+		for(int i = 0;i<enemyList.size();i++) {
+    		if(enemyList.get(i).getPositionX() < 100 || enemyList.get(i).isDestroyed) {
+    			enemyList.remove(i);
+    		}
+    	}
+    	for(int i = 0;i<projectileList.size();i++) {
+    		if(projectileList.get(i).getPositionX() > 1000) {
+    			projectileList.remove(i);
+    		}
+    	}
+	}
 
-    ActionListener cleanUpEntities = new ActionListener() {
+    ActionListener cleanUpDestroyed = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
         	for(int i = 0;i<destroyedEnemyList.size();i++) {
         		destroyedEnemyList.remove(i);
-        	}
-        	for(int i = 0;i<enemyList.size();i++) {
-        		if(enemyList.get(i).getPositionX() < 100) {
-        			enemyList.remove(i);
-        		}
-        	}
-        	for(int i = 0;i<projectileList.size();i++) {
-        		if(projectileList.get(i).getPositionX() > 1000) {
-        			projectileList.remove(i);
-        		}
         	}
             
     	}
