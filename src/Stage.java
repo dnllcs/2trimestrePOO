@@ -22,6 +22,7 @@ public class Stage extends JPanel implements KeyListener{
 	private Player player;
 	private Image background;
 	private ArrayList<Enemy> enemyList = new ArrayList<>();
+	private ArrayList<Enemy> destroyedEnemyList = new ArrayList<>();
 	private ArrayList<Projectile> projectileList = new ArrayList<>();
 	private Random rdm = new Random();
 
@@ -41,6 +42,9 @@ public class Stage extends JPanel implements KeyListener{
 		Graphics2D graphics = (Graphics2D) g;
 		graphics.drawImage(background, 0, 0, null);
 		enemyList.stream().forEach(e -> {
+			graphics.drawImage(e.getImage(), e.getPositionX(), e.getPositionY(), this);
+		});
+		destroyedEnemyList.stream().forEach(e -> {
 			graphics.drawImage(e.getImage(), e.getPositionX(), e.getPositionY(), this);
 		});
 		projectileList.stream().forEach(p -> {
@@ -69,12 +73,14 @@ public class Stage extends JPanel implements KeyListener{
 		enemyList.stream().forEach(e -> {
 			if(e.getRectangle().intersects(this.player.getRectangle())) {
 				e.collision();
+				destroyedEnemyList.add(e);
 			}
 		});
 		enemyList.stream().forEach(e -> {
 			projectileList.stream().forEach(p -> {
 				if(p.getRectangle().intersects(e.getRectangle())) {
 					e.collision();
+					destroyedEnemyList.add(e);
 				}
 			});
 		});
@@ -110,11 +116,11 @@ public class Stage extends JPanel implements KeyListener{
 
     ActionListener cleanUpEntities = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
+        	for(int i = 0;i<destroyedEnemyList.size();i++) {
+        		destroyedEnemyList.remove(i);
+        	}
         	for(int i = 0;i<enemyList.size();i++) {
-        		if(enemyList.get(i).isDestroyed) {
-        			enemyList.remove(i);
-        		}
-        		else if(enemyList.get(i).getPositionX() < 100) {
+        		if(enemyList.get(i).getPositionX() < 100) {
         			enemyList.remove(i);
         		}
         	}
