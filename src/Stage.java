@@ -1,16 +1,22 @@
-import java.awt.Image;
-import java.awt.Graphics2D;
 import java.awt.Graphics;
-import javax.swing.JPanel;
-import javax.swing.ImageIcon;
-import java.util.ArrayList;
-import java.util.Random;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.Random;
+
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 import javax.swing.Timer;
-import java.awt.Rectangle;
+
+import ScreenEntities.Enemy;
+import ScreenEntities.Player;
+import ScreenEntities.Projectile;
+
 
 public class Stage extends JPanel implements KeyListener{
 	private Player player;
@@ -20,21 +26,16 @@ public class Stage extends JPanel implements KeyListener{
 	private Random rdm = new Random();
 
 	public Stage() {
-		
 		ImageIcon loading = new ImageIcon("assets/background.png");
 		this.background = loading.getImage();
 		this.player = new Player();
-		this.loadEnemies();
 		player.load();
 		System.out.println("FFFFFFFFFFFF");
-		Timer timer = new Timer(1000, removeEntities);
+		Timer timer = new Timer(1000, cleanUpEntities);
 		Timer enemySpawnTimer = new Timer(500, enemySpawn);
 		enemySpawnTimer.start();
-		timer.start();
-
-		
+		timer.start();	
 	}
-
 	public void paint(Graphics g) {
 		System.out.println("*");
 		Graphics2D graphics = (Graphics2D) g;
@@ -49,12 +50,40 @@ public class Stage extends JPanel implements KeyListener{
 		g.dispose();
 
 	}
+    public void moveEntities() {
+    	enemyList.stream().forEach(e -> {
+    		e.setPositionX(e.getPositionX()-1);
+    	});
+    	if(projectileList.size() > 0) {
+			projectileList.stream().forEach(p -> {
+				p.setPositionX(p.getPositionX() + 4);
+    		});
+		}
+    }
+    public void fireProjectile() {
+    	Projectile p = new Projectile(player.getPositionX(), player.getPositionY());
+    	p.load();
+    	projectileList.add(p);
+    }
+	public void collision() {
+		enemyList.stream().forEach(e -> {
+			if(e.getRectangle().intersects(this.player.getRectangle())) {
+				e.collision();
+			}
+		});
+		enemyList.stream().forEach(e -> {
+			projectileList.stream().forEach(p -> {
+				if(p.getRectangle().intersects(e.getRectangle())) {
+					e.collision();
+				}
+			});
+		});
+	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		System.out.println(e.getKeyChar());
 	}
-
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -79,35 +108,7 @@ public class Stage extends JPanel implements KeyListener{
 		}
 	}
 
-	public void loadEnemies() {
-		for(int i = 0;i<10;i++) {
-
-			Enemy e = new Enemy(1200, 50 + rdm.nextInt(600));
-			e.load();
-			enemyList.add(e);
-
-		}
-	}
-	public void collision() {
-		enemyList.stream().forEach(e -> {
-			if(e.getRectangle().intersects(this.player.getRectangle())) {
-				e.collision();
-			}
-		});
-		enemyList.stream().forEach(e -> {
-			projectileList.stream().forEach(p -> {
-				if(p.getRectangle().intersects(e.getRectangle())) {
-					e.collision();
-				}
-			});
-		});
-	}
-	public void victoryScreen() {
-       	ImageIcon loading = new ImageIcon("assets/victoryScreen.png");
-		this.background = loading.getImage();
-	}
-
-    ActionListener removeEntities = new ActionListener() {
+    ActionListener cleanUpEntities = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
         	for(int i = 0;i<enemyList.size();i++) {
         		if(enemyList.get(i).isDestroyed) {
@@ -125,23 +126,6 @@ public class Stage extends JPanel implements KeyListener{
             
     	}
     };
-
-    public void moveEnemiesAndProjectiles() {
-    	enemyList.stream().forEach(e -> {
-    		e.setPositionX(e.getPositionX()-1);
-    	});
-    	if(projectileList.size() > 0) {
-			projectileList.stream().forEach(p -> {
-				p.setPositionX(p.getPositionX() + 4);
-    		});
-		}
-    }
-    public void fireProjectile() {
-    	Projectile p = new Projectile(player.getPositionX(), player.getPositionY());
-    	p.load();
-    	projectileList.add(p);
-
-    }
 
     ActionListener enemySpawn = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {

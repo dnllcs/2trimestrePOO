@@ -1,6 +1,11 @@
+package ScreenEntities;
+
 import java.awt.Image;
-import javax.swing.ImageIcon;
 import java.awt.Rectangle;
+
+import javax.swing.ImageIcon;
+
+
 public class Player {
 	private int positionX;
 	private int positionY;
@@ -10,6 +15,22 @@ public class Player {
 	private int imageWidth;
 	private int imageHeight;
 	
+
+	public Player() {
+		this.positionX = 100;
+		this.positionY = 100;
+	}
+
+	public void load() {
+		ImageIcon loading = new ImageIcon("assets/player.png");
+		this.image = loading.getImage();
+		this.imageWidth = this.image.getWidth(null);
+		this.imageHeight = this.image.getHeight(null);
+	}
+	
+	public Rectangle getRectangle() {
+		return new Rectangle(this.positionX, this.positionY, this.imageWidth, this.imageHeight);
+	}
 
 	public int getPositionX() {
 		return positionX;
@@ -66,23 +87,5 @@ public class Player {
 	public void setImageHeight(int imageHeight) {
 		this.imageHeight = imageHeight;
 	}
-
-	public Player() {
-		this.positionX = 100;
-		this.positionY = 100;
-	}
-
-	public void load() {
-		ImageIcon loading = new ImageIcon("assets/player.png");
-		this.image = loading.getImage();
-		this.imageWidth = this.image.getWidth(null);
-		this.imageHeight = this.image.getHeight(null);
-	}
-	
-	public Rectangle getRectangle() {
-		return new Rectangle(this.positionX, this.positionY, this.imageWidth, this.imageHeight);
-	}
-	
-
 
 }

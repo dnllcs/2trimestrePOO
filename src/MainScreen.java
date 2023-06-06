@@ -27,7 +27,7 @@ public class MainScreen extends JFrame {
 		MainScreen mainSc = new MainScreen();
 		mainSc.semiConstructor();
 		while (true) {
-			mainSc.stage.moveEnemiesAndProjectiles();
+			mainSc.stage.moveEntities();
 			mainSc.stage.collision();
 			mainSc.repaint();
 			Thread.sleep(10);
