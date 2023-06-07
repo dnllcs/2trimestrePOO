@@ -38,7 +38,6 @@ public class Stage extends JPanel implements KeyListener{
 		timer.start();	
 	}
 	public void paint(Graphics g) {
-		System.out.println("*");
 		Graphics2D graphics = (Graphics2D) g;
 		graphics.drawImage(background, 0, 0, null);
 		enemyList.stream().forEach(e -> {
@@ -72,33 +71,25 @@ public class Stage extends JPanel implements KeyListener{
     	projectileList.add(p);
     }
 	public void collision() {
-		enemyList.stream().forEach(e -> {
-			if(e.getRectangle().intersects(this.player.getRectangle())) {
-				e.collision();
-				destroyedEnemyList.add(e);
-			}
-		});
-		enemyList.stream().forEach(e -> {
-			if(projectileList.size() > 0) {
-				projectileList.stream().forEach(p -> {
-					if(p.getRectangle().intersects(e.getRectangle())) {
-						e.collision();
-						destroyedEnemyList.add(e);
-					}
-				});
-			}
-		});
-		//????????????????????????????????????????
+		System.out.println("collision");
 		for(int i = 0;i<enemyList.size();i++) {
-			if(enemyList.get(i).isDestroyed) {
-				enemyList.remove(i);
+			if(enemyList.get(i).getRectangle().intersects(this.player.getRectangle())) {
+				enemyList.get(i).collision();
+				destroyedEnemyList.add(enemyList.get(i));
+			}
+		}
+		for(int i = 0;i<enemyList.size();i++) {
+			for(int j = 0;j<projectileList.size();j++) {
+				if(projectileList.get(j).getRectangle().intersects(enemyList.get(i).getRectangle())) {
+					enemyList.get(i).collision();
+					destroyedEnemyList.add(enemyList.get(i));
+				}
 			}
 		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		System.out.println(e.getKeyChar());
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -124,6 +115,7 @@ public class Stage extends JPanel implements KeyListener{
 		}
 	}
 	public void cleanUpMovingEntities() {
+		System.out.println("cleanUpMovingEntities");
 		// for(int i = 0;i<enemyList.size();i++) {
     	// 	if(enemyList.get(i).getPositionX() < 100 || enemyList.get(i).isDestroyed) {
     	// 		enemyList.remove(i);
