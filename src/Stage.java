@@ -44,8 +44,8 @@ public class Stage extends JPanel implements KeyListener{
 		enemyList.stream().forEach(e -> {
 			graphics.drawImage(e.getImage(), e.getPositionX(), e.getPositionY(), this);
 		});
-		destroyedEnemyList.stream().forEach(e -> {
-			graphics.drawImage(e.getImage(), e.getPositionX(), e.getPositionY(), this);
+		destroyedEnemyList.stream().forEach(d -> {
+			graphics.drawImage(d.getImage(), d.getPositionX(), d.getPositionY(), this);
 		});
 		projectileList.stream().forEach(p -> {
 			graphics.drawImage(p.getImage(), p.getPositionX(), p.getPositionY(), this);
@@ -56,7 +56,9 @@ public class Stage extends JPanel implements KeyListener{
 	}
     public void moveEntities() {
     	enemyList.stream().forEach(e -> {
-    		e.setPositionX(e.getPositionX()-1);
+    		if(!e.isDestroyed) {
+	    		e.setPositionX(e.getPositionX()-1);	
+    		}
     	});
     	if(projectileList.size() > 0) {
 			projectileList.stream().forEach(p -> {
@@ -70,7 +72,6 @@ public class Stage extends JPanel implements KeyListener{
     	projectileList.add(p);
     }
 	public void collision() {
-
 		enemyList.stream().forEach(e -> {
 			if(e.getRectangle().intersects(this.player.getRectangle())) {
 				e.collision();
@@ -123,11 +124,16 @@ public class Stage extends JPanel implements KeyListener{
 		}
 	}
 	public void cleanUpMovingEntities() {
+		// for(int i = 0;i<enemyList.size();i++) {
+    	// 	if(enemyList.get(i).getPositionX() < 100 || enemyList.get(i).isDestroyed) {
+    	// 		enemyList.remove(i);
+    	// 	}
+    	// }
 		for(int i = 0;i<enemyList.size();i++) {
-    		if(enemyList.get(i).getPositionX() < 100 || enemyList.get(i).isDestroyed) {
-    			enemyList.remove(i);
-    		}
-    	}
+			if(enemyList.get(i).isDestroyed) {
+				enemyList.remove(i);
+			}
+		}
     	for(int i = 0;i<projectileList.size();i++) {
     		if(projectileList.get(i).getPositionX() > 1000) {
     			projectileList.remove(i);
@@ -140,7 +146,6 @@ public class Stage extends JPanel implements KeyListener{
         	for(int i = 0;i<destroyedEnemyList.size();i++) {
         		destroyedEnemyList.remove(i);
         	}
-            
     	}
     };
 
