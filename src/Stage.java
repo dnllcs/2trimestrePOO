@@ -54,6 +54,8 @@ public class Stage extends JPanel implements KeyListener{
 
 	}
     public void moveEntities() {
+    	player.setPositionX(player.getPositionX() + player.getMovementX());
+    	player.setPositionY(player.getPositionY() + player.getMovementY());
     	enemyList.stream().forEach(e -> {
     		if(!e.isDestroyed) {
 	    		e.setPositionX(e.getPositionX()-1);	
@@ -94,16 +96,16 @@ public class Stage extends JPanel implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			player.setPositionY(player.getPositionY() - 15);
+			player.setMovementY(-5);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			player.setPositionY(player.getPositionY() + 15);
+			player.setMovementY(5);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			player.setPositionX(player.getPositionX() - 15);
+			player.setMovementX(-5);;
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			player.setPositionX(player.getPositionX() + 15);
+			player.setMovementX(5);
 		}
 
 	}
@@ -112,6 +114,18 @@ public class Stage extends JPanel implements KeyListener{
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			this.fireProjectile();
+		}
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			player.setMovementY(0);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			player.setMovementY(0);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			player.setMovementX(0);;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			player.setMovementX(0);
 		}
 	}
 	public void cleanUpMovingEntities() {
