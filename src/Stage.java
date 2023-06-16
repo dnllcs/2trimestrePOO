@@ -18,36 +18,34 @@ import ScreenEntities.Enemy;
 import ScreenEntities.Player;
 import ScreenEntities.Projectile;
 
-
 public class Stage extends JPanel implements ActionListener, KeyListener{
 	private Player player;
 	private Image background;
 	private ArrayList<Enemy> enemyList = new ArrayList<>();
-	private ArrayList<Enemy> destroyedEnemyList = new ArrayList<>();
 	private ArrayList<Projectile> projectileList = new ArrayList<>();
-	private Random rdm = new Random();
+	private static Random rdm = new Random();
+	private static final int DELAY = 5;
+	private static final int ENEMY_SPAWN_DELAY = 500;
+	private static int enemyMovement = 4;
+	private static int bulletSpeed = 6;
+	private static int spawnPoint = 1200;
+	private static int despawnPoint = -100;
 
 	public Stage() {
 		ImageIcon loading = new ImageIcon("assets/background.png");
 		this.background = loading.getImage();
 		this.player = new Player();
 		player.load();
-		System.out.println("FFFFFFFFFFFF");
-		Timer timer = new Timer(1000, cleanUpDestroyed);
-		Timer enemySpawTimer = new Timer(500, enemySpawn);
+		Timer enemySpawTimer = new Timer(ENEMY_SPAWN_DELAY, enemySpawn);
+		Timer refreshTimer = new Timer(DELAY, this);
 		enemySpawTimer.start();
-		timer.start();	
-		Timer testeTImer = new Timer(5, this);
-		testeTImer.start();
+		refreshTimer.start();
 	}
 	public void paint(Graphics g) {
 		Graphics2D graphics = (Graphics2D) g;
 		graphics.drawImage(background, 0, 0, null);
 		enemyList.stream().forEach(e -> {
 			graphics.drawImage(e.getImage(), e.getPositionX(), e.getPositionY(), this);
-		});
-		destroyedEnemyList.stream().forEach(d -> {
-			graphics.drawImage(d.getImage(), d.getPositionX(), d.getPositionY(), this);
 		});
 		projectileList.stream().forEach(p -> {
 			graphics.drawImage(p.getImage(), p.getPositionX(), p.getPositionY(), this);
@@ -59,36 +57,32 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
     public void moveEntities() {
     	enemyList.stream().forEach(e -> {
     		if(!e.isDestroyed) {
-	    		e.setPositionX(e.getPositionX()-2);	
+	    		e.setPositionX(e.getPositionX()-enemyMovement);	
     		}
     	});
     	if(projectileList.size() > 0) {
 			projectileList.stream().forEach(p -> {
-				p.setPositionX(p.getPositionX() + 4);
+				p.setPositionX(p.getPositionX() + bulletSpeed);
     		});
 		}
-    }
-    public void fireProjectile() {
-    	Projectile p = new Projectile(player.getPositionX(), player.getPositionY());
-    	p.load();
-    	projectileList.add(p);
     }
 	public void collision() {
 		for(int i = 0;i<enemyList.size();i++) {
 			if(enemyList.get(i).getRectangle().intersects(this.player.getRectangle())) {
 				enemyList.get(i).collision();
-				destroyedEnemyList.add(enemyList.get(i));
+				
 			}
 		}
 		for(int i = 0;i<enemyList.size();i++) {
 			for(int j = 0;j<projectileList.size();j++) {
 				if(projectileList.get(j).getRectangle().intersects(enemyList.get(i).getRectangle())) {
 					enemyList.get(i).collision();
-					destroyedEnemyList.add(enemyList.get(i));
+					
 				}
 			}
 		}
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {;
 		this.player.reload();
@@ -97,21 +91,25 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 		this.cleanUpMovingEntities();
         repaint();
 	}
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		this.player.move(e);
-
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		this.player.stop(e);
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			projectileList.add(new Projectile(player.getPositionX(), player.getPositionY()));
+		}
 	}
+
 	public void cleanUpMovingEntities() {
-		
 		for(int i = 0;i<enemyList.size();i++) {
 			if(enemyList.get(i).isDestroyed || enemyList.get(i).getPositionX() < -100) {
 				enemyList.remove(i);
@@ -124,13 +122,6 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
     	}
 	}
 
-    ActionListener cleanUpDestroyed = new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-        	for(int i = 0;i<destroyedEnemyList.size();i++) {
-        		destroyedEnemyList.remove(i);
-        	}
-    	}
-    };
     ActionListener enemySpawn = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
        		int posY = 50 + rdm.nextInt(600);

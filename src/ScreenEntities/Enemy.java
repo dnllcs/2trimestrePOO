@@ -1,7 +1,8 @@
 package ScreenEntities;
 import java.awt.Image;
 import java.awt.Rectangle;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
@@ -35,15 +36,18 @@ public class Enemy {
 		this.image = loading.getImage();
 		this.imageWidth = this.image.getWidth(null);
 		this.imageHeight = this.image.getHeight(null);
-		//explosionDuration = new Timer(2000, setDestroyed);
-		this.isDestroyed = true;
+		explosionDuration = new Timer(2000, setDestroyed);
+		explosionDuration.setRepeats(false);
+		explosionDuration.start();
 	}
 
-    // ActionListener setDestroyed = new ActionListener() {
-    //     public void actionPerformed(ActionEvent evt) {
-    //     	this.isDestroyed = true;
-    // 	}
-    // };
+    ActionListener setDestroyed = new ActionListener() {
+    	@Override
+        public void actionPerformed(ActionEvent evt) {
+        	isDestroyed = true;
+        	explosionDuration.stop();
+    	}
+    };
 
 	public Rectangle getRectangle() {
 		return new Rectangle(this.positionX, this.positionY, this.imageWidth, this.imageHeight);

@@ -14,11 +14,13 @@ public class Projectile {
 	private Image image;
 	private int imageWidth;
 	private int imageHeight;
-
+	private static final int WIDTH_RANGE = 120;
+	private static final int HEIGHT_RANGE = 120;
 
 	public Projectile(int posX, int posY) {
-		this.positionX = posX + 120;
-		this.positionY = posY + 50;
+		this.positionX = posX + WIDTH_RANGE;
+		this.positionY = posY + HEIGHT_RANGE;
+		this.load();
 	}
 	public void load() {
 		ImageIcon loading = new ImageIcon("assets/projectile.png");
