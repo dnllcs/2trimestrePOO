@@ -3,6 +3,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 
 
 public class Enemy {
@@ -15,6 +16,7 @@ public class Enemy {
 	private int imageWidth;
 	private int imageHeight;
 	public boolean isDestroyed = false;
+	private Timer explosionDuration;
 
 	public Enemy(int posX, int posY) {
 		this.positionX = posX;
@@ -33,8 +35,15 @@ public class Enemy {
 		this.image = loading.getImage();
 		this.imageWidth = this.image.getWidth(null);
 		this.imageHeight = this.image.getHeight(null);
+		//explosionDuration = new Timer(2000, setDestroyed);
 		this.isDestroyed = true;
 	}
+
+    // ActionListener setDestroyed = new ActionListener() {
+    //     public void actionPerformed(ActionEvent evt) {
+    //     	this.isDestroyed = true;
+    // 	}
+    // };
 
 	public Rectangle getRectangle() {
 		return new Rectangle(this.positionX, this.positionY, this.imageWidth, this.imageHeight);

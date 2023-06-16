@@ -26,14 +26,15 @@ public class MainScreen extends JFrame {
 	public static void main(String[] args) throws InterruptedException {
 		MainScreen mainSc = new MainScreen();
 		mainSc.addSettings();
-		while (true) {
-			mainSc.stage.moveEntities();
-			mainSc.stage.collision();
-			mainSc.stage.cleanUpMovingEntities();
-			mainSc.repaint();
-			Thread.sleep(10);
-		}
-	}
+	// 	while (true) {
+	// 		mainSc.stage.moveEntities();
+	// 		mainSc.stage.collision();
+	// 		mainSc.stage.cleanUpMovingEntities();
+	// 		mainSc.repaint();
+	// 		Thread.sleep(10);
+	// 	}
+	// }
 
 	
+	}
 }

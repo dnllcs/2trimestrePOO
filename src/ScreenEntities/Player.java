@@ -2,6 +2,7 @@ package ScreenEntities;
 
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
 
@@ -14,11 +15,13 @@ public class Player {
 	private Image image;
 	private int imageWidth;
 	private int imageHeight;
-	
+	private static final int MOVEMENT = 3;
+	private static final int STARTING_POSITION_X = 100;
+	private static final int STARTING_POSITION_Y = 100;
 
 	public Player() {
-		this.positionX = 100;
-		this.positionY = 100;
+		this.positionX = STARTING_POSITION_X;
+		this.positionY = STARTING_POSITION_Y;
 	}
 
 	public void load() {
@@ -27,7 +30,48 @@ public class Player {
 		this.imageWidth = this.image.getWidth(null);
 		this.imageHeight = this.image.getHeight(null);
 	}
-	
+	public void reload() {
+		this.positionX += this.movementX;
+		this.positionY += this.movementY;
+	}
+	public void move(KeyEvent e) {
+	    int key = e.getKeyCode();
+	    switch (key) {
+	        case KeyEvent.VK_UP:
+	            this.movementY = -MOVEMENT;
+	            break;
+	        case KeyEvent.VK_DOWN:
+	            this.movementY = MOVEMENT;
+	            break;
+	        case KeyEvent.VK_LEFT:
+	            this.movementX = -MOVEMENT;
+	            break;
+	        case KeyEvent.VK_RIGHT:
+	            this.movementX = MOVEMENT;
+	            break;
+	        default:
+	            break;
+	    }
+	}
+	public void stop(KeyEvent tecla) {
+	    int key = tecla.getKeyCode();
+	    switch (key) {
+	        case KeyEvent.VK_UP:
+	            this.movementY = 0;
+	            break;
+	        case KeyEvent.VK_DOWN:
+	            this.movementY = 0;
+	            break;
+	        case KeyEvent.VK_LEFT:
+	            this.movementX = 0;
+	            break;
+	        case KeyEvent.VK_RIGHT:
+	            this.movementX = 0;
+	            break;
+	        default:
+	            break;
+	    }
+	}
 	public Rectangle getRectangle() {
 		return new Rectangle(this.positionX, this.positionY, this.imageWidth, this.imageHeight);
 	}

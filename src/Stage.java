@@ -12,13 +12,14 @@ import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.event.*;
 
 import ScreenEntities.Enemy;
 import ScreenEntities.Player;
 import ScreenEntities.Projectile;
 
 
-public class Stage extends JPanel implements KeyListener{
+public class Stage extends JPanel implements ActionListener, KeyListener{
 	private Player player;
 	private Image background;
 	private ArrayList<Enemy> enemyList = new ArrayList<>();
@@ -33,9 +34,11 @@ public class Stage extends JPanel implements KeyListener{
 		player.load();
 		System.out.println("FFFFFFFFFFFF");
 		Timer timer = new Timer(1000, cleanUpDestroyed);
-		Timer enemySpawnTimer = new Timer(500, enemySpawn);
-		enemySpawnTimer.start();
+		Timer enemySpawTimer = new Timer(500, enemySpawn);
+		enemySpawTimer.start();
 		timer.start();	
+		Timer testeTImer = new Timer(5, this);
+		testeTImer.start();
 	}
 	public void paint(Graphics g) {
 		Graphics2D graphics = (Graphics2D) g;
@@ -54,11 +57,9 @@ public class Stage extends JPanel implements KeyListener{
 
 	}
     public void moveEntities() {
-    	player.setPositionX(player.getPositionX() + player.getMovementX());
-    	player.setPositionY(player.getPositionY() + player.getMovementY());
     	enemyList.stream().forEach(e -> {
     		if(!e.isDestroyed) {
-	    		e.setPositionX(e.getPositionX()-1);	
+	    		e.setPositionX(e.getPositionX()-2);	
     		}
     	});
     	if(projectileList.size() > 0) {
@@ -73,7 +74,6 @@ public class Stage extends JPanel implements KeyListener{
     	projectileList.add(p);
     }
 	public void collision() {
-		System.out.println("collision");
 		for(int i = 0;i<enemyList.size();i++) {
 			if(enemyList.get(i).getRectangle().intersects(this.player.getRectangle())) {
 				enemyList.get(i).collision();
@@ -89,54 +89,31 @@ public class Stage extends JPanel implements KeyListener{
 			}
 		}
 	}
-
+	@Override
+	public void actionPerformed(ActionEvent e) {;
+		this.player.reload();
+		this.moveEntities();
+		this.collision();
+		this.cleanUpMovingEntities();
+        repaint();
+	}
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			player.setMovementY(-5);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			player.setMovementY(5);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			player.setMovementX(-5);;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			player.setMovementX(5);
-		}
+		this.player.move(e);
 
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			this.fireProjectile();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			player.setMovementY(0);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			player.setMovementY(0);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			player.setMovementX(0);;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			player.setMovementX(0);
-		}
+		this.player.stop(e);
 	}
 	public void cleanUpMovingEntities() {
-		System.out.println("cleanUpMovingEntities");
-		// for(int i = 0;i<enemyList.size();i++) {
-    	// 	if(enemyList.get(i).getPositionX() < 100 || enemyList.get(i).isDestroyed) {
-    	// 		enemyList.remove(i);
-    	// 	}
-    	// }
+		
 		for(int i = 0;i<enemyList.size();i++) {
-			if(enemyList.get(i).isDestroyed) {
+			if(enemyList.get(i).isDestroyed || enemyList.get(i).getPositionX() < -100) {
 				enemyList.remove(i);
 			}
 		}
@@ -154,7 +131,6 @@ public class Stage extends JPanel implements KeyListener{
         	}
     	}
     };
-
     ActionListener enemySpawn = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
        		int posY = 50 + rdm.nextInt(600);
