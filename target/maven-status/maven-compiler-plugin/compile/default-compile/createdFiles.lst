@@ -1,0 +1,10 @@
+org\example\Stage.class
+org\example\ScreenEntities\GraphicalElement.class
+org\example\ScreenEntities\SpecialProjectile.class
+org\example\MainScreen.class
+org\example\ScreenEntities\Enemy.class
+org\example\ScreenEntities\Player.class
+org\example\MainScreen$CustomComponentListener.class
+org\example\ScreenEntities\DefaultProjectile.class
+org\example\ScreenEntities\Enemy$1.class
+org\example\Stage$1.class
