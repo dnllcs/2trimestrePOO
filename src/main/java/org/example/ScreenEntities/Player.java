@@ -9,9 +9,13 @@ import javax.swing.ImageIcon;
 public class Player extends GraphicalElement {
 
 	public List<GraphicalElement> projectileList = new ArrayList<>();
+	private int score;
+	private int hitpoints = 3;
 	public static int MOVEMENT = 5;
 	private static final int STARTING_POSITION_X = 100;
 	private static final int STARTING_POSITION_Y = 100;
+
+
 
 
 	public Player() {
@@ -28,6 +32,22 @@ public class Player extends GraphicalElement {
 		positionX += movementX;
 		positionY += movementY;
 	}
+
+	public int getScore() {
+		return this.score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public int getHitpoints() {
+		return this.hitpoints;
+	}
+	public void setHitpoints(int hitpoints) {
+		this.hitpoints = hitpoints;
+	}
+
 	//logica de movimentacao do personagem
 	public void move(KeyEvent e) {
 	    int key = e.getKeyCode();

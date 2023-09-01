@@ -106,7 +106,7 @@ public class MainScreen extends JFrame  implements KeyListener{
 				this.getContentPane().removeAll();
 				this.getContentPane().add(stage);
 				this.validate();
-				this.setVisible(true);
+				//this.setVisible(true);
 				this.removeKeyListener(this);
 				stage.requestFocus(true);
 				}

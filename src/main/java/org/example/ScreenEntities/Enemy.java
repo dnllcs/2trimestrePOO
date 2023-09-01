@@ -31,6 +31,9 @@ public class Enemy extends GraphicalElement{
 		explosionDuration = new Timer(500, setDestroyed);
 		explosionDuration.setRepeats(false);
 		explosionDuration.start();
+		super.imageHeight = 0;
+		super.imageWidth = 0;
+
 	}
 	//muda o valor de isDestroyed para true e para o timer
     ActionListener setDestroyed = new ActionListener() {

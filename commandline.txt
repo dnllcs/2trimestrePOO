@@ -1,0 +1,5 @@
+mvn exec:java -Dexec.mainClass=org.example.MainScreen
+
+mvn clean compile assembly:single
+
+java -jar {path}/MyMavenProject-1.0-SNAPSHOT-jar-with-dependencies.jar
