@@ -19,6 +19,7 @@ public abstract class GraphicalElement {
 
 	public abstract void load();
 
+
 	public void loadImage(String imageName) {
 		try {
 		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(imageName + ".png");

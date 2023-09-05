@@ -1,16 +1,22 @@
 package org.example.ScreenEntities;
 
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
+
+import java.awt.Image;
 
 public class Player extends GraphicalElement {
 
 	public List<GraphicalElement> projectileList = new ArrayList<>();
 	private int score;
 	private int hitpoints = 3;
+	private Image hitpointImage;
+	private Image hitpointEmptyImage;
 	public static int MOVEMENT = 5;
 	private static final int STARTING_POSITION_X = 100;
 	private static final int STARTING_POSITION_Y = 100;
@@ -27,6 +33,16 @@ public class Player extends GraphicalElement {
 		super.loadImage("player2");
 		imageWidth = image.getWidth(null);
 		imageHeight = image.getHeight(null);
+		try {
+		InputStream hitpointStream = getClass().getClassLoader().getResourceAsStream("hitpoint.png");
+		InputStream hitpointEmptyStream = getClass().getClassLoader().getResourceAsStream("hitpointEmpty.png");
+		this.hitpointImage = ImageIO.read(hitpointStream);
+		this.hitpointEmptyImage = ImageIO.read(hitpointEmptyStream);
+
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	public void reload() {
 		positionX += movementX;
@@ -47,7 +63,14 @@ public class Player extends GraphicalElement {
 	public void setHitpoints(int hitpoints) {
 		this.hitpoints = hitpoints;
 	}
+	public Image getHitpointImage() {
+		return this.hitpointImage;
+	}
 
+	public Image getHitpointEmptyImage() {
+		return this.hitpointEmptyImage;
+	}
+	
 	//logica de movimentacao do personagem
 	public void move(KeyEvent e) {
 	    int key = e.getKeyCode();

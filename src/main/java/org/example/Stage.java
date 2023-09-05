@@ -15,54 +15,41 @@ import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import org.example.ScreenEntities.Enemy;
 import org.example.ScreenEntities.Player;
+import org.example.ScreenEntities.SpaceDebris;
 import org.example.ScreenEntities.DefaultProjectile;
 import org.example.ScreenEntities.GraphicalElement;
 
 public class Stage extends JPanel implements ActionListener, KeyListener{
 	private Player player;
 	private Image background;
-	private Image hitpoint;
-	private Image hitPointEmpty;
-	private List<Enemy> enemyList = new ArrayList<>();
+	private List<Enemy> enemyList;
+	private List<SpaceDebris> gElementList;
 	private static Random rdm = new Random();
 	private static final int DELAY = 5;
-	private static final int ENEMY_SPAWN_DELAY = 200;
+	private static final int ENEMY_SPAWN_DELAY = 750;
 	private static final int MAIN_WINDOW_WIDTH = 1366;
 	private static final int MAIN_WINDOW_HEIGHT = 768;
 	private static final int SCORE_PER_ENEMY = 10;
-	private static int enemyMovement = 16;
-	private static int spawnPoint = MAIN_WINDOW_WIDTH + 100;
-	private static int despawnPoint = -100;
-	private static Timer enemySpawTimer;
-	private static Timer refreshTimer;
-
-	private long moveEntitiesDuration;
-	private long collisionDuration;
-
-	private Long runningTime;
-	private Long runningTimeStart;
+	private static final int ENEMY_MOVEMENT = 12;
+	private static final int SPAWN_POINT = MAIN_WINDOW_WIDTH + 100;
+	private static final int DESPAWN_POINT = -100;
+	private Timer enemySpawTimer;
+	private Timer refreshTimer;
 
 	public Stage() {
 		try {
 		InputStream backgroundStream = getClass().getClassLoader().getResourceAsStream("background.png");
-		InputStream hitpointStream = getClass().getClassLoader().getResourceAsStream("hitpoint.png");
-		InputStream hitpointEmptyStream = getClass().getClassLoader().getResourceAsStream("hitpointEmpty.png");
-		this.hitpoint = ImageIO.read(hitpointStream);
 		this.background = ImageIO.read(backgroundStream);
-		this.hitPointEmpty = ImageIO.read(hitpointEmptyStream);
-
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		//Teste
-		runningTimeStart = System.currentTimeMillis();
-
+		enemyList = new ArrayList<>();
+		inializeGraphicElements();
 		this.player = new Player();
 		player.load();
 		//Cria objetos da classe Enemy no intervalo estabelecido
@@ -77,22 +64,29 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 	public void paint(Graphics g) {
 		Graphics2D graphics = (Graphics2D) g;
 		graphics.drawImage(background, 0, 0, null);
+
+		gElementList.stream().forEach(e -> {
+			graphics.drawImage(e.getImage(), e.getPositionX(), e.getPositionY(), this);
+		});
+
 		enemyList.stream().forEach(e -> {
 			graphics.drawImage(e.getImage(), e.getPositionX(), e.getPositionY(), this);
 		});
+
 		player.projectileList.stream().forEach(p -> {
 			graphics.drawImage(p.getImage(), p.getPositionX(), p.getPositionY(), this);
 		});
+
 		graphics.drawImage(player.getImage(), player.getPositionX(), player.getPositionY(), this);
+
 		for(int i = 0;i<3;i++) {
 			if(player.getHitpoints() > i) {
-				graphics.drawImage(hitpoint, 20+(i*30), 45, this);
+				graphics.drawImage(player.getHitpointImage(), 20+(i*30), 45, this);
 			}
 			else {
-				graphics.drawImage(hitPointEmpty, 20+(i*30), 45, this);
+				graphics.drawImage(player.getHitpointEmptyImage(), 20+(i*30), 45, this);
 			}
 		}
-
 		this.drawScore(graphics);
 		g.dispose();
 
@@ -107,11 +101,10 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 
 	//Move objetos das classes Enemy e DefaultProjectile
     public void moveEntities() {
-    	long startTime = System.nanoTime();
 		for(int i = 0;i<enemyList.size();i++) {
 			Enemy e = enemyList.get(i);
 			if(!e.isDestroyed) {
-				e.setPositionX(e.getPositionX() - enemyMovement);
+				e.setPositionX(e.getPositionX() - ENEMY_MOVEMENT);
 			}
 		}
 		if(player.projectileList.size() > 0) {
@@ -121,13 +114,13 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 				p.setPositionY(p.getPositionY() + p.getMovementY());
 			}
 		}
-		long endTime = System.nanoTime();
-		moveEntitiesDuration += (endTime - startTime);
+		for(int i = 0;i<gElementList.size();i++) {
+			gElementList.get(i).refresh();
+		}
     }
 
     //Itera sob todas as entidades de tela e checa por intersecoes
 	public void collision() {
-		long startTime = System.nanoTime();
 		for(int i = 0;i<enemyList.size();i++) {
 			Enemy en = enemyList.get(i);
 			if(en.getRectangle().intersects(this.player.getRectangle())) {
@@ -150,10 +143,19 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 				}
 			}
 		}
-		long endTime = System.nanoTime();
-		collisionDuration += (endTime - startTime);
-
 	}
+
+	public void inializeGraphicElements() {
+		this.gElementList = new ArrayList<SpaceDebris>();
+	    for (int i = 0; i < 5; i++) {
+	        int x = (int) ((Math.random() * 8000) + MAIN_WINDOW_WIDTH);
+	        int y = (int) (Math.random() * MAIN_WINDOW_HEIGHT);
+	        int speed = (int) ((Math.random() * 10)+3);
+	        SpaceDebris asteroid = new SpaceDebris(x, y, speed);
+	        this.gElementList.add(asteroid);
+	    }
+	}
+
 	//atualiza o estado o objeto de Stage
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -172,13 +174,6 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if((int)e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			long endTime = System.currentTimeMillis();
-			runningTime = endTime - runningTimeStart;
-			System.out.println("main() -> exec time: " + this.runningTime);			
-			System.out.println("moveEntities() -> exec time: " + this.moveEntitiesDuration/this.runningTime);
-			System.out.println("collison() -> exec time: " + this.collisionDuration/this.runningTime);
-			//System.out.println("moveEntities() -> exec time: " + this.moveEntitiesDuration);
-
 			this.enemySpawTimer.stop();
 			this.refreshTimer.stop();
 			this.setVisible(false);
@@ -197,7 +192,7 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 	//Remove objetos da lista projectileList que estao fora da tela
 	public void cleanUpMovingEntities() {
 		for(int i = 0;i<enemyList.size();i++) {
-			if(enemyList.get(i).isDestroyed || enemyList.get(i).getPositionX() < despawnPoint) {
+			if(enemyList.get(i).isDestroyed || enemyList.get(i).getPositionX() < DESPAWN_POINT) {
 				enemyList.remove(i);
 			}
 		}
@@ -208,16 +203,17 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
     		}
     	}
 	}
+
 	//Actionlistener que cria entidades da classe Enemy
     ActionListener enemySpawn = new ActionListener() {
     	@Override
         public void actionPerformed(ActionEvent evt) {
-       		Rectangle rec = new Rectangle(spawnPoint, 25 + rdm.nextInt(MAIN_WINDOW_HEIGHT - 25), 60, 60);
+       		Rectangle rec = new Rectangle(SPAWN_POINT, 25 + rdm.nextInt(MAIN_WINDOW_HEIGHT - 25), 60, 60);
        		//Impede que duas entidades compartilhem o mesmo espaco no plano
         	while(enemyList.stream().anyMatch(e -> e.getRectangle().intersects(rec))) {
-        		rec.setBounds(spawnPoint, 25 + rdm.nextInt(MAIN_WINDOW_HEIGHT - 25), 60, 60);        	
+        		rec.setBounds(SPAWN_POINT, 25 + rdm.nextInt(MAIN_WINDOW_HEIGHT - 25), 60, 60);        	
         	}
-			Enemy en = new Enemy(spawnPoint, (int) rec.getY());
+			Enemy en = new Enemy(SPAWN_POINT, (int) rec.getY());
 			en.load();
 			enemyList.add(en);
     	}	
