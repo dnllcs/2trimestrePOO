@@ -17,10 +17,26 @@ public class SpecialProjectile extends GraphicalElement {
 		movementY = movY;
 		this.load();
 	}
+
+	public SpecialProjectile() {
+		super();
+		this.load();
+	}
+
 	@Override
 	public void load() {
-		super.loadImage("specialProjectile");
+		super.loadImage("SpecialProjectile");
 		imageWidth = this.image.getWidth(null);
 		imageHeight = this.image.getHeight(null);
 	}
+
+	public SpecialProjectile setProperties(int posX, int posY, int movX, int movY) {
+		this.positionX = posX + WIDTH_RANGE;
+		this.positionY = posY + HEIGHT_RANGE;
+		movementX = movX;
+		movementY = movY;
+		this.load();
+		return this;
+	}
+
 }

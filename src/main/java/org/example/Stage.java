@@ -21,6 +21,7 @@ import javax.swing.Timer;
 
 import org.example.ScreenEntities.Enemy;
 import org.example.ScreenEntities.Player;
+import org.example.ScreenEntities.SpecialProjectile;
 import org.example.ScreenEntities.DefaultProjectile;
 import org.example.ScreenEntities.GraphicalElement;
 
@@ -69,7 +70,7 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 		enemySpawTimer = new Timer(ENEMY_SPAWN_DELAY, enemySpawn);
 		//Atualiza o stage de acordo com o intervalo estabelecido
 		refreshTimer = new Timer(DELAY, this);
-		enemySpawTimer.start();
+		//enemySpawTimer.start();
 		refreshTimer.start();
 		addKeyListener(this);
 
@@ -80,9 +81,9 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 		enemyList.stream().forEach(e -> {
 			graphics.drawImage(e.getImage(), e.getPositionX(), e.getPositionY(), this);
 		});
-		player.projectileList.stream().forEach(p -> {
-			graphics.drawImage(p.getImage(), p.getPositionX(), p.getPositionY(), this);
-		});
+		// player.projectileList.stream().forEach(p -> {
+		// 	graphics.drawImage(p.getImage(), p.getPositionX(), p.getPositionY(), this);
+		// });
 		graphics.drawImage(player.getImage(), player.getPositionX(), player.getPositionY(), this);
 		for(int i = 0;i<3;i++) {
 			if(player.getHitpoints() > i) {
@@ -204,6 +205,10 @@ public class Stage extends JPanel implements ActionListener, KeyListener{
 
     	for(int i = 0;i<player.projectileList.size();i++) {
     		if(player.projectileList.get(i).getPositionX() > MAIN_WINDOW_WIDTH) {
+    			if(player.projectileList.get(i) instanceof SpecialProjectile) {
+    				SpecialProjectile sp = (SpecialProjectile) player.projectileList.get(i);
+    				player.specialProjectileBuffer.push(sp);
+    			}
     			player.projectileList.remove(i);
     		}
     	}
