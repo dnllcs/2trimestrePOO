@@ -7,7 +7,7 @@ import org.example.repositories.ProjectileDaoImpl;
 import java.util.List;
 
 public class ProjectileService {
-    private static ProjectileDao dao = new ProjectileDaoImpl();
+    private static ProjectileDaoImpl dao = new ProjectileDaoImpl();
 
     public static List<Projectile> getAll() {
         return dao.getAll();

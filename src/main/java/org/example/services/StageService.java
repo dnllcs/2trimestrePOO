@@ -1,20 +1,22 @@
 package org.example.services;
 
-import org.example.Models.Enemy;
 import org.example.Screens.Stage;
-import org.example.repositories.UniversalDao;
+import org.example.repositories.StageDaoImpl;
 
 public class StageService {
+    private static StageDaoImpl dao = new StageDaoImpl();
 
-
-    public static Stage buildUpStage(int id) {
-        Stage stageTest = UniversalService.getStage(id);
+    public static Stage continueLastSave() {
+        Stage stageTest = dao.getById(countRows());
         Stage newnewStage = new Stage(stageTest, 5);
         System.out.println("EAGERLY FETCHED FROM PROJECTILES EAGERLY FETCHED PLAYER: " + stageTest.getPlayer().projectileList);
-        stageTest.getPlayer().getScore();
         return newnewStage;
     }
-    public static Long getRowCount() {
-        return UniversalDao.getInstance().countRows();
+    public static void insert(Stage stage) {
+        dao.insert(stage);
     }
+    public static int countRows() {
+        return dao.countRows().intValue();
+    }
+
 }

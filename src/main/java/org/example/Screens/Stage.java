@@ -24,7 +24,7 @@ import org.example.Models.Player;
 import org.example.Models.SpaceDebris;
 import org.example.Models.DefaultProjectile;
 import org.example.Models.GraphicalElement;
-import org.example.services.UniversalService;
+import org.example.services.StageService;
 
 @Entity
 @Table
@@ -208,7 +208,7 @@ public class Stage extends JPanel implements IStage, ActionListener, KeyListener
 	public void keyPressed(KeyEvent e) {
 		System.out.println("TYPED");
 		if((int)e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			UniversalService.saveState(this);
+			StageService.insert(this);
 			enemySpawTimer.stop();
 			refreshTimer.stop();
 			this.setVisible(false);

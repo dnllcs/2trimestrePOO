@@ -7,7 +7,7 @@ import org.example.repositories.EnemyDaoImpl;
 import java.util.List;
 
 public class EnemyService {
-    private static EnemyDao dao = new EnemyDaoImpl();
+    private static EnemyDaoImpl dao = new EnemyDaoImpl();
 
     public static List<Enemy> getAll() {
         return dao.getAll();

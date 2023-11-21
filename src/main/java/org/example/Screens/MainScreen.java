@@ -1,9 +1,6 @@
 package org.example.Screens;
 
-import org.example.connection.HibernateUtil;
-import org.example.repositories.UniversalDao;
 import org.example.services.StageService;
-import org.example.services.UniversalService;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -117,8 +114,7 @@ public class MainScreen extends JFrame  implements KeyListener{
 			}
 			else if(choice == 1) {
 				try {
-					stage = StageService.buildUpStage(StageService.getRowCount().intValue());
-					System.out.println(UniversalDao.getInstance().getEnemies());
+					stage = StageService.continueLastSave();
 					stage.addComponentListener(new CustomComponentListener());
 					this.getContentPane().removeAll();
 					this.getContentPane().add(stage);

@@ -7,7 +7,7 @@ import org.example.repositories.SpaceDebrisDaoImpl;
 import java.util.List;
 
 public class SpaceDebrisService {
-    private static SpaceDebrisDao dao = new SpaceDebrisDaoImpl();
+    private static SpaceDebrisDaoImpl dao = new SpaceDebrisDaoImpl();
 
     public static List<SpaceDebris> getAll() {
         return dao.getAll();
