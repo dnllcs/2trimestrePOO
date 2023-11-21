@@ -1,4 +1,4 @@
-mvn exec:java -Dexec.mainClass=org.example.MainScreen
+mvn exec:java -Dexec.mainClass=org.example.Screens.MainScreen
 
 mvn clean compile assembly:single
 
