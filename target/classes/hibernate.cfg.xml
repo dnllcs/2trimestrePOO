@@ -7,9 +7,9 @@
             com.mysql.jdbc.Driver
         </property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">root123</property>
+        <property name="hibernate.connection.password"></property>
         <property name="hibernate.connection.url">
-            jdbc:mysql://localhost:3306/bd_jogo
+            jdbc:mysql://localhost:3304/db_jogo
         </property>
         <property name="hibernate.dialect">
             org.hibernate.dialect.MySQL8Dialect

@@ -38,7 +38,7 @@ public class MainScreen extends JFrame  implements KeyListener{
 		JPanel p = new JPanel();
 		JLabel newGame = new JLabel("New Game");
 		JLabel title = new JLabel("yetToBeTitled");
-		JLabel placeHolder1 = new JLabel("placeHolder1");
+		JLabel placeHolder1 = new JLabel("continue");
 		JLabel placeHolder2 = new JLabel("placeHolder2");
 		JLabel exit = new JLabel("exit");
 		cursor = new JLabel(">");
@@ -49,7 +49,7 @@ public class MainScreen extends JFrame  implements KeyListener{
 
 		newGame.setBounds((MAIN_WINDOW_WIDTH / 2) - 125, 350, 250, 150);
 		title.setBounds((MAIN_WINDOW_WIDTH / 2) - 250, 150, 500, 150);
-		placeHolder1.setBounds((MAIN_WINDOW_WIDTH / 2) - 125, 400, 250, 150);
+		placeHolder1.setBounds((MAIN_WINDOW_WIDTH / 2) - 125, 400, 450, 150);
 		placeHolder2.setBounds((MAIN_WINDOW_WIDTH / 2) - 125, 450, 250, 150);
 		cursor.setBounds((MAIN_WINDOW_WIDTH / 2) - 145, 350, 50, 150);
 		exit.setBounds((MAIN_WINDOW_WIDTH / 2) - 125, 500, 250, 150);
@@ -117,7 +117,7 @@ public class MainScreen extends JFrame  implements KeyListener{
 			}
 			else if(choice == 1) {
 				try {
-					Stage stage = new Stage(5);
+					stage = StageService.buildUpStage(StageService.getRowCount().intValue());
 					System.out.println(UniversalDao.getInstance().getEnemies());
 					stage.addComponentListener(new CustomComponentListener());
 					this.getContentPane().removeAll();
@@ -134,15 +134,7 @@ public class MainScreen extends JFrame  implements KeyListener{
 				}
 			}
 			else if(choice == 2) {
-				stage = StageService.buildUpStage(UniversalDao.getInstance().countRows().intValue());
-				stage.addComponentListener(new CustomComponentListener());
-				this.getContentPane().removeAll();
-				this.getContentPane().add(stage);
-				this.validate();
-				//this.setVisible(true);
-				this.removeKeyListener(this);
-				stage.requestFocus(true);
-				choice = 0;
+
 			}
 			else if(choice == 3) {
 				System.exit(0);
