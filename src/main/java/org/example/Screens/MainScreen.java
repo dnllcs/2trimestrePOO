@@ -99,7 +99,7 @@ public class MainScreen extends JFrame  implements KeyListener{
 		else if(key == KeyEvent.VK_ENTER) {
 			if(choice == 0) {
 				try {
-				Stage stage = new Stage(5);
+				stage = new Stage(0);
 				stage.addComponentListener(new CustomComponentListener());
 				this.getContentPane().removeAll();
 				this.getContentPane().add(stage);

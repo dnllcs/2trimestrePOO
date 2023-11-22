@@ -8,6 +8,13 @@ import java.util.List;
 
 public class ProjectileDaoImpl implements ProjectileDao{
     private Session session;
+    private static ProjectileDaoImpl instance;
+    public static synchronized ProjectileDaoImpl getInstance() {
+        if(instance == null) {
+            instance = new ProjectileDaoImpl();
+        }
+        return instance;
+    }
     public ProjectileDaoImpl() {
         this.session = HibernateUtil.getSession();
     }

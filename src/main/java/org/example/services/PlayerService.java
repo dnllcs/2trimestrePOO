@@ -7,7 +7,7 @@ import org.example.repositories.PlayerDaoImpl;
 import java.util.List;
 
 public class PlayerService {
-    private static PlayerDaoImpl dao = new PlayerDaoImpl();
+    private static PlayerDaoImpl dao = PlayerDaoImpl.getInstance();
 
     public static List<Player> getAll() {
         return dao.getAll();

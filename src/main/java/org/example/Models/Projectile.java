@@ -45,4 +45,7 @@ public class Projectile extends GraphicalElement {
         this.imageWidth = this.image.getWidth(null);
         this.imageHeight = this.image.getHeight(null);
     }
+    public String getImageName() {
+        return this.imageName;
+    }
 }

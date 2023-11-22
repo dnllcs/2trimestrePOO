@@ -8,6 +8,14 @@ import java.util.List;
 
 public class PlayerDaoImpl implements PlayerDao{
     private Session session;
+    private static PlayerDaoImpl instance;
+    public static synchronized PlayerDaoImpl getInstance() {
+        if(instance == null) {
+            instance = new PlayerDaoImpl();
+        }
+        return instance;
+    }
+
     public PlayerDaoImpl() {
         this.session = HibernateUtil.getSession();
     }

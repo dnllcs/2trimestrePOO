@@ -4,10 +4,18 @@ import org.example.Screens.Stage;
 import org.example.connection.HibernateUtil;
 import org.hibernate.Session;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 public class StageDaoImpl implements StageDao{
     private Session session;
+    private static StageDaoImpl instance;
+    public static synchronized StageDaoImpl getInstance() {
+        if(instance == null) {
+            instance = new StageDaoImpl();
+        }
+        return instance;
+    }
     public StageDaoImpl() {
         this.session = HibernateUtil.getSession();
     }
@@ -23,6 +31,7 @@ public class StageDaoImpl implements StageDao{
     }
 
     @Override
+    @Transactional
     public void insert(Stage stage) {
         try {
             session.beginTransaction();

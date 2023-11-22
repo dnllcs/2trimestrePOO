@@ -15,7 +15,7 @@ public class SpaceDebris extends GraphicalElement{
 	@ManyToOne
 	@JoinColumn(name = "id")
 	private Stage stage;
-
+	public SpaceDebris() {}
 	public SpaceDebris(int posX, int posY, int movX, Stage stage) {
 		this.positionX = posX;
 		this.positionY = posY;

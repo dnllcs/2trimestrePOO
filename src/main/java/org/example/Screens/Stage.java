@@ -19,11 +19,7 @@ import javax.persistence.*;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import org.example.Models.Enemy;
-import org.example.Models.Player;
-import org.example.Models.SpaceDebris;
-import org.example.Models.DefaultProjectile;
-import org.example.Models.GraphicalElement;
+import org.example.Models.*;
 import org.example.services.StageService;
 
 @Entity
@@ -64,17 +60,16 @@ public class Stage extends JPanel implements IStage, ActionListener, KeyListener
 	public static Timer enemySpawTimer;
 	@Transient
 	public static Timer refreshTimer;
-
-	public Stage() {
-
-	}
-	public Stage(int test) {
+	@Transient
+	public int alreadyExists;
+	public Stage() {} //Usado pelo Hibernate
+	public Stage(int test) { //Quando selecionado um new game
+		this.alreadyExists = test;
 		setUpStage();
 	}
-	public Stage(Stage loaded, int test) {
-		setUpStage();
-		this.player = loaded.getPlayer();
-		this.enemyList = loaded.getEnemyList();
+	public Stage(Stage loaded, int test) { //Quando carregando um jogo ja existente
+		this.alreadyExists = test;
+		this.loadFromDatabase(loaded);
 	}
 	public void setUpStage() {
 		try {
@@ -131,7 +126,7 @@ public class Stage extends JPanel implements IStage, ActionListener, KeyListener
 	    g.drawString(scoreText, 20, 25);
 	}
 
-	//Move objetos das classes Enemy e DefaultProjectile
+
     public void moveEntities() {
 		for(int i = 0;i<this.enemyList.size();i++) {
 			Enemy e = enemyList.get(i);
@@ -164,11 +159,11 @@ public class Stage extends JPanel implements IStage, ActionListener, KeyListener
 				}
 			}
 			for(int j = 0;j<this.player.projectileList.size();j++) {
-				GraphicalElement proj = this.player.projectileList.get(j);
+				Projectile proj = this.player.projectileList.get(j);
 				if(proj.getRectangle().intersects(en.getRectangle())) {
 					en.collision();
 					this.player.setScore(this.player.getScore() + SCORE_PER_ENEMY);
-					if(proj instanceof DefaultProjectile) {
+					if(proj.getImageName().equals("projectile")) {
 						this.player.projectileList.remove(j);
 					}
 					
@@ -187,7 +182,15 @@ public class Stage extends JPanel implements IStage, ActionListener, KeyListener
 	        this.backgroundElement.add(asteroid);
 	    }
 	}
-
+	public void loadFromDatabase(Stage stage) {
+		this.setUpStage();
+		this.id = stage.id;
+		this.player = stage.getPlayer();
+		this.enemyList = stage.getEnemyList();
+		this.player.projectileList.forEach(p -> {p.load();});
+		this.enemyList.forEach(e -> {e.load();});
+		this.backgroundElement.forEach(b -> {b.load();});
+	}
 	//atualiza o estado o objeto de Stage
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -208,7 +211,12 @@ public class Stage extends JPanel implements IStage, ActionListener, KeyListener
 	public void keyPressed(KeyEvent e) {
 		System.out.println("TYPED");
 		if((int)e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			StageService.insert(this);
+			if(this.alreadyExists == 0) {
+				StageService.insert(this);
+			}
+			else if(this.alreadyExists == 1) {
+				StageService.update(this);
+			}
 			enemySpawTimer.stop();
 			refreshTimer.stop();
 			this.setVisible(false);
@@ -262,12 +270,5 @@ public class Stage extends JPanel implements IStage, ActionListener, KeyListener
 		return enemyList;
 	}
 
-	public void setEnemyList(List<Enemy> enemyList) {
-		this.enemyList = enemyList;
-	}
-	public void addToEnemyList(List<Enemy> enemyList) {
-		enemyList.forEach(e -> {e.load();});
-		this.enemyList.addAll(enemyList);
-	}
 
 }

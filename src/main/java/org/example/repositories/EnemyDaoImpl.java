@@ -8,6 +8,13 @@ import java.util.List;
 
 public class EnemyDaoImpl implements EnemyDao{
     private Session session;
+    private static EnemyDaoImpl instance;
+    public static synchronized EnemyDaoImpl getInstance() {
+        if(instance == null) {
+            instance = new EnemyDaoImpl();
+        }
+        return instance;
+    }
     public EnemyDaoImpl() {
         this.session = HibernateUtil.getSession();
     }
